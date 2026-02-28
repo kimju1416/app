@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easy App Builder V2.6 (Final Guide Ver)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Pretendard', sans-serif; background-color: #f8f9fa; overflow: hidden; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .chip { cursor: pointer; transition: all 0.15s ease-out; font-size: 0.8rem; border-width: 1px; user-select: none; }
+    .chip:hover { transform: translateY(-2px); box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.1); }
+    .chip:active { transform: scale(0.96); }
+    .tab-active { border-bottom: 3px solid #2563eb; color: #1e40af; font-weight: 700; }
+    .tab-inactive { color: #64748b; font-weight: 500; }
+    .template-card { transition: all 0.2s; border: 1px solid #e5e7eb; }
+    .template-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1); border-color: #9ca3af; }
+  </style>
+</head>
+<body class="h-screen flex flex-col text-gray-800">
+
+  <header class="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-3 lg:px-6 shadow-sm z-30 shrink-0">
+    <div class="flex items-center gap-2 lg:gap-6 flex-1">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold shadow-md">E</div>
+        <div class="hidden sm:block">
+            <h1 class="text-base lg:text-lg font-bold text-gray-900 tracking-tight leading-none">Easy App Builder</h1>
+            <p class="text-[10px] text-blue-600 font-medium">School Web App Prompt V2.6</p>
+        </div>
+        <div class="block sm:hidden">
+            <h1 class="text-sm font-bold text-gray-900 tracking-tight leading-tight">App Builder</h1>
+            <p class="text-[9px] text-blue-600 font-medium">V2.6</p>
+        </div>
+      </div>
+      <!-- Desktop Navigation -->
+      <nav class="flex space-x-4 lg:space-x-6 h-14">
+        <button onclick="switchTab('builder')" id="btn-builder" class="tab-active h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2"><i class="fas fa-tools"></i> <span class="hidden lg:inline">커스텀 빌더</span><span class="lg:hidden">빌더</span></button>
+        <button onclick="switchTab('templates')" id="btn-templates" class="tab-inactive h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2">📐 <span class="hidden lg:inline">기초 템플릿</span><span class="lg:hidden">템플릿</span></button>
+        <button onclick="switchTab('guide')" id="btn-guide" class="tab-inactive h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2"><i class="fas fa-book-open"></i> <span class="hidden lg:inline">사용 설명서</span><span class="lg:hidden">설명서</span></button>
+      </nav>
+    </div>
+    <div class="flex md:flex items-center gap-3">
+        <button onclick="resetAll()" class="bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-600 text-xs lg:text-sm font-bold px-2 lg:px-3 py-1.5 rounded-lg border border-gray-200 transition-colors flex items-center gap-2">
+            <i class="fas fa-redo-alt"></i> <span class="hidden sm:inline">초기화</span>
+        </button>
+    </div>
+  </header>
+
+  <main id="view-builder" class="flex-1 flex overflow-hidden">
+    <section class="w-1/2 bg-slate-50 border-r border-gray-200 overflow-y-auto custom-scroll p-4 lg:p-6">
+      <div class="max-w-4xl mx-auto space-y-10 pb-20">
+        
+        <div>
+          <h2 class="text-blue-700 font-bold text-sm mb-3 sticky top-0 bg-slate-50/95 backdrop-blur py-2 z-10 border-b border-slate-200 flex items-center">
+            <span class="w-6 h-6 rounded bg-blue-100 text-blue-600 flex items-center justify-center mr-2 text-xs">1</span> 예시주제 (Subject)
+          </h2>
+          <div class="space-y-3">
+             <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">SCHOOL & PE</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="setText('in-subject', '학교 스포츠클럽 리그전 관리 및 기록 시스템')" class="chip bg-blue-50 border-blue-100 text-blue-800 px-3 py-1.5 rounded-lg">🏆 리그전 관리</div>
+                    <div onclick="setText('in-subject', 'PAPS 체력측정 결과 기록 및 등급 자동 산출 앱')" class="chip bg-blue-50 border-blue-100 text-blue-800 px-3 py-1.5 rounded-lg">🏃‍♂️ PAPS 측정</div>
+                    <div onclick="setText('in-subject', '운동부 훈련 일지 및 출석 관리 시스템')" class="chip bg-blue-50 border-blue-100 text-blue-800 px-3 py-1.5 rounded-lg">📝 훈련 일지</div>
+                    <div onclick="setText('in-subject', '체육 기자재 대여/반납 관리 키오스크 앱')" class="chip bg-blue-50 border-blue-100 text-blue-800 px-3 py-1.5 rounded-lg">🏐 기자재 대여</div>
+                </div>
+             </div>
+             <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">ADMIN & CLASS</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="setText('in-subject', '학부모 상담 주간 예약 신청 시스템')" class="chip bg-indigo-50 border-indigo-100 text-indigo-800 px-3 py-1.5 rounded-lg">📅 상담 예약</div>
+                    <div onclick="setText('in-subject', '현장체험학습 버스 좌석 및 조 편성 앱')" class="chip bg-indigo-50 border-indigo-100 text-indigo-800 px-3 py-1.5 rounded-lg">🚌 버스 좌석</div>
+                    <div onclick="setText('in-subject', '급식 메뉴 선호도 조사 및 투표 앱')" class="chip bg-indigo-50 border-indigo-100 text-indigo-800 px-3 py-1.5 rounded-lg">🍱 급식 투표</div>
+                    <div onclick="setText('in-subject', '학교폭력 사안 처리 현황 트래킹 보드')" class="chip bg-indigo-50 border-indigo-100 text-indigo-800 px-3 py-1.5 rounded-lg">⚖️ 학폭 관리</div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-indigo-700 font-bold text-sm mb-3 sticky top-0 bg-slate-50/95 backdrop-blur py-2 z-10 border-b border-slate-200 flex items-center">
+            <span class="w-6 h-6 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center mr-2 text-xs">2</span> 기능 및 상세 내용 (Features & Details)
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+             <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">DATA & AUTH</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-feature', '- 구글 로그인(학번/이름 검증)')" class="chip bg-gray-50 border-gray-200 text-gray-700 px-2 py-1 rounded">🔑 로그인</div>
+                    <div onclick="addText('in-feature', '- 구글 시트에 데이터 실시간 저장 (CRUD)')" class="chip bg-gray-50 border-gray-200 text-gray-700 px-2 py-1 rounded">💾 시트 저장</div>
+                    <div onclick="addText('in-feature', '- 데이터 불러오기 및 검색 필터링')" class="chip bg-gray-50 border-gray-200 text-gray-700 px-2 py-1 rounded">🔍 조회/검색</div>
+                    <div onclick="addText('in-feature', '- 관리자 전용 페이지 및 비밀번호 보호')" class="chip bg-gray-50 border-gray-200 text-gray-700 px-2 py-1 rounded">👮‍♂️ 관리자 모드</div>
+                </div>
+                <p class="text-[10px] text-purple-600 font-bold mb-2 mt-4 tracking-wider">INPUT & MEDIA</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-feature', '- HTML5 Canvas를 활용한 전자 서명(Signature Pad) 기능')" class="chip bg-purple-50 border-purple-200 text-purple-800 px-2 py-1 rounded">✍️ 전자 서명</div>
+                    <div onclick="addText('in-feature', '- 카메라 촬영 및 파일 업로드 기능 (Base64 변환)')" class="chip bg-purple-50 border-purple-200 text-purple-800 px-2 py-1 rounded">📸 카메라/파일</div>
+                </div>
+             </div>
+             <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm">
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">ADVANCED</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-feature', '- 신청 완료 시 확인 이메일 자동 발송')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-2 py-1 rounded">📧 메일 발송</div>
+                    <div onclick="addText('in-feature', '- 구글 캘린더에 일정 자동 등록')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-2 py-1 rounded">📅 캘린더 연동</div>
+                    <div onclick="addText('in-feature', '- Chart.js를 활용한 실시간 통계 시각화')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-2 py-1 rounded">📊 차트 시각화</div>
+                    <div onclick="addText('in-feature', '- 결과물 PDF 생성 및 다운로드')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-2 py-1 rounded">📄 PDF 변환</div>
+                    <div onclick="addText('in-feature', '- QR코드 생성 및 스캐너 기능')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-2 py-1 rounded">📱 QR 코드</div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-pink-600 font-bold text-sm mb-3 sticky top-0 bg-slate-50/95 backdrop-blur py-2 z-10 border-b border-slate-200 flex items-center">
+            <span class="w-6 h-6 rounded bg-pink-100 text-pink-600 flex items-center justify-center mr-2 text-xs">3</span> 디자인 (Design)
+          </h2>
+          <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm space-y-4">
+             <div>
+                 <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">APP STYLE</p>
+                 <div class="grid grid-cols-2 gap-2">
+                    <div onclick="setText('in-style', '카카오톡 스타일: 노란색(#FEE500) 배경, 둥근 말풍선 UI, 하단 고정 탭바.')" class="chip bg-yellow-100 border-yellow-300 text-yellow-900 p-2 rounded flex items-center gap-2"><i class="fas fa-comment"></i> 카카오톡</div>
+                    <div onclick="setText('in-style', '인스타그램 스타일: 화이트 미니멀리즘, 얇은 라인 아이콘, 그라데이션 포인트.')" class="chip bg-pink-50 border-pink-200 text-pink-900 p-2 rounded flex items-center gap-2"><i class="fab fa-instagram"></i> 인스타그램</div>
+                    <div onclick="setText('in-style', '토스(Toss) 스타일: 굵은 제목, 넓은 여백, 파란색(#0064FF) 포인트 컬러.')" class="chip bg-blue-50 border-blue-200 text-blue-900 p-2 rounded flex items-center gap-2"><i class="fas fa-wallet"></i> 토스(Toss)</div>
+                    <div onclick="setText('in-style', '네이버 스타일: 그린(#03C75A) 테마, 직관적인 검색창 UI.')" class="chip bg-green-50 border-green-200 text-green-900 p-2 rounded flex items-center gap-2"><i class="fas fa-search"></i> 네이버</div>
+                 </div>
+             </div>
+             <div>
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">THEME</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-style', '다크 모드: 짙은 회색(#1F2937) 배경, 형광 텍스트.')" class="chip bg-gray-800 text-white border-gray-600 px-3 py-1.5 rounded-lg">🌑 다크모드</div>
+                    <div onclick="addText('in-style', '글래스모피즘: 반투명한 유리 효과(Backdrop-filter).')" class="chip bg-gradient-to-r from-blue-100 to-purple-100 text-purple-900 border-purple-200 px-3 py-1.5 rounded-lg">🧊 글래스모피즘</div>
+                    <div onclick="addText('in-style', '뉴모피즘: 배경과 일체화된 부드러운 엠보싱 버튼.')" class="chip bg-gray-100 text-gray-600 border-gray-200 px-3 py-1.5 rounded-lg shadow-sm">☁️ 뉴모피즘</div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-orange-600 font-bold text-sm mb-3 sticky top-0 bg-slate-50/95 backdrop-blur py-2 z-10 border-b border-slate-200 flex items-center">
+            <span class="w-6 h-6 rounded bg-orange-100 text-orange-600 flex items-center justify-center mr-2 text-xs">4</span> 동작 (Behavior)
+          </h2>
+          <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm space-y-4">
+             <div>
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">UX & ANIMATION</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-behavior', '- 로딩 스피너(Loading Spinner): 데이터 처리 중 회전 애니메이션 표시')" class="chip bg-orange-50 border-orange-200 text-orange-900 font-bold px-3 py-1 rounded ring-1 ring-orange-300">⏳ 로딩 스피너 (New)</div>
+                    <div onclick="addText('in-behavior', '- 스켈레톤 로딩(Skeleton Loading) 적용')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">💀 스켈레톤 로딩</div>
+                    <div onclick="addText('in-behavior', '- 토스트 알림(Toast) 메시지 사용')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">🍞 토스트 알림</div>
+                    <div onclick="addText('in-behavior', '- 성공 시 SweetAlert2 팝업 표시')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">🎉 성공 팝업</div>
+                    <div onclick="addText('in-behavior', '- 폭죽 효과(Confetti) 애니메이션')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">🎊 폭죽 효과</div>
+                    <div onclick="addText('in-behavior', '- 당겨서 새로고침(Pull-to-refresh)')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">📲 당겨서 새로고침</div>
+                </div>
+             </div>
+             <div>
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">INTERACTION</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-behavior', '- 중복 클릭 방지: 버튼 클릭 즉시 비활성화(Disabled) 처리')" class="chip bg-orange-50 border-orange-200 text-orange-900 font-bold px-3 py-1 rounded ring-1 ring-orange-300">🚫 중복 클릭 방지 (New)</div>
+                    <div onclick="addText('in-behavior', '- 화면 깜빡임 없는 비동기(AJAX) 처리')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">⚡ 비동기 처리</div>
+                    <div onclick="addText('in-behavior', '- 입력 폼 자동 리셋 및 포커싱')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">🔄 폼 자동 리셋</div>
+                    <div onclick="addText('in-behavior', '- 무한 스크롤(Infinite Scroll) 적용')" class="chip bg-orange-50 border-orange-200 text-orange-800 px-3 py-1 rounded">📜 무한 스크롤</div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 class="text-green-600 font-bold text-sm mb-3 sticky top-0 bg-slate-50/95 backdrop-blur py-2 z-10 border-b border-slate-200 flex items-center">
+            <span class="w-6 h-6 rounded bg-green-100 text-green-600 flex items-center justify-center mr-2 text-xs">5</span> 옵션 (Options)
+          </h2>
+          <div class="bg-white p-3 rounded-xl border border-gray-100 shadow-sm space-y-4">
+             
+             <div class="bg-red-50/50 p-3 rounded-lg border border-red-100">
+                <p class="text-[10px] text-red-600 font-bold mb-2 tracking-wider"><i class="fas fa-shield-alt mr-1"></i>SECURITY & SCHEDULE (New)</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-option', '- 자동 마감 기능: 상단 변수(const DEADLINE)로 날짜 지정, 기한 경과 시 접속 차단')" class="chip bg-white border-red-300 text-red-800 px-3 py-1 rounded shadow-sm font-bold">⏰ 자동 마감 타이머</div>
+                    <div onclick="addText('in-option', '- PWA 스타일: 아이폰/갤럭시 [홈 화면에 추가] 가이드 팝업 띄우기')" class="chip bg-white border-red-300 text-red-800 px-3 py-1 rounded shadow-sm font-bold">📲 홈 화면 추가 유도</div>
+                </div>
+             </div>
+
+             <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                <p class="text-[10px] text-blue-700 font-bold mb-2 tracking-wider"><i class="fas fa-robot mr-1"></i>AI & API</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-option', '- Web Speech API: 음성 인식(STT) 기능 추가')" class="chip bg-white border-blue-300 text-blue-800 px-3 py-1 rounded shadow-sm">🎙️ 음성 인식</div>
+                    <div onclick="addText('in-option', '- Google Custom Search API 검색 기능 연동')" class="chip bg-white border-blue-300 text-blue-800 px-3 py-1 rounded shadow-sm">🔍 구글 검색</div>
+                </div>
+             </div>
+
+             <div class="bg-green-50/50 p-3 rounded-lg border border-green-100">
+                <p class="text-[10px] text-green-700 font-bold mb-2 tracking-wider"><i class="fas fa-database mr-1"></i>DATA & STORAGE CONNECTION</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-option', '- DB 연결: 현재 활성 시트(ActiveSpreadsheet) 사용')" class="chip bg-white border-green-300 text-green-800 px-3 py-1 rounded shadow-sm">📊 시트 자동 연동 (Active)</div>
+                    <div onclick="addText('in-option', '- DB 연결: 특정 시트 ID를 코드 상단 변수(const SHEET_ID)로 지정')" class="chip bg-white border-green-300 text-green-800 px-3 py-1 rounded shadow-sm">🆔 시트 ID 직접 입력</div>
+                    <div onclick="addText('in-option', '- 저장소: 앱 실행 시 전용 폴더 자동 생성 및 연결')" class="chip bg-white border-teal-300 text-teal-800 px-3 py-1 rounded shadow-sm">📁 폴더 자동 생성</div>
+                    <div onclick="addText('in-option', '- 저장소: 파일 업로드용 폴더 ID를 코드 상단 변수(const FOLDER_ID)로 지정')" class="chip bg-white border-teal-300 text-teal-800 px-3 py-1 rounded shadow-sm">📂 폴더 ID 직접 입력</div>
+                </div>
+             </div>
+
+             <div>
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">STRUCTURE & CODE</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-option', '- 필수 파일: Code.gs(백엔드)와 Index.html(프론트엔드) 두 개의 전체 코드를 모두 작성')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">🛠️ 백엔드+프론트엔드</div>
+                    <div onclick="addText('in-option', '- 초보자용 상세 한글 주석 포함')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">📝 한글 주석</div>
+                    <div onclick="addText('in-option', '- Index.html 파일 하나에 모두 통합 (Single File)')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">📦 파일 하나로</div>
+                    <div onclick="addText('in-option', '- 모바일/PC 반응형 웹(Responsive)')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">📱 반응형 웹</div>
+                </div>
+             </div>
+             
+             <div>
+                <p class="text-[10px] text-gray-400 font-bold mb-2 tracking-wider">FEATURE & SECURITY</p>
+                <div class="flex flex-wrap gap-2">
+                    <div onclick="addText('in-option', '- 로컬 스토리지(LocalStorage)로 데이터 유지')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">💾 로컬 저장소</div>
+                    <div onclick="addText('in-option', '- 데이터 CSV 엑셀 파일 다운로드 기능')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">📥 엑셀 다운로드</div>
+                    <div onclick="addText('in-option', '- 관리자 페이지 비밀번호 잠금 기능')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">🔒 암호 잠금</div>
+                    <div onclick="addText('in-option', '- 외부 CDN(FontAwesome, Tailwind) 사용')" class="chip bg-green-50 border-green-200 text-green-800 px-3 py-1 rounded">🌐 CDN 활용</div>
+                </div>
+             </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="w-1/2 bg-white flex flex-col relative h-full">
+      <div class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 pb-32 md:pb-40">
+        <div class="max-w-2xl mx-auto space-y-5">
+          <div class="group">
+            <label class="flex items-center text-sm font-bold text-blue-700 mb-1"><i class="fas fa-book mr-2"></i>1. 주제*</label>
+            <textarea id="in-subject" rows="2" class="w-full p-3 bg-blue-50 border border-blue-100 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none transition text-sm text-gray-800" placeholder="왼쪽에서 주제를 선택하거나, 참고하여 새롭게 작성하세요."></textarea>
+          </div>
+          <div class="group">
+            <label class="flex items-center text-sm font-bold text-indigo-700 mb-1"><i class="fas fa-cogs mr-2"></i>2. 기능 및 상세 내용</label>
+            <textarea id="in-feature" rows="8" class="w-full p-3 bg-indigo-50 border border-indigo-100 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none resize-none transition text-sm text-gray-800" placeholder="기능 칩을 클릭하거나, 구체적인 내용을 직접 적어주세요. (예: 시트 A열은 학번, B열은 이름, 퀴즈 문제는 ~ 등)"></textarea>
+          </div>
+          <div class="group">
+            <label class="flex items-center text-sm font-bold text-pink-700 mb-1"><i class="fas fa-palette mr-2"></i>3. 디자인</label>
+            <textarea id="in-style" rows="3" class="w-full p-3 bg-pink-50 border border-pink-100 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none resize-none transition text-sm text-gray-800" placeholder="디자인 스타일을 선택하세요."></textarea>
+          </div>
+          <div class="group">
+             <div class="flex flex-col md:flex-row gap-4">
+                <div class="w-full md:w-1/2">
+                    <label class="flex items-center text-sm font-bold text-orange-700 mb-1"><i class="fas fa-mouse-pointer mr-2"></i>4. 동작</label>
+                    <textarea id="in-behavior" rows="6" class="w-full p-3 bg-orange-50 border border-orange-100 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none resize-none transition text-sm text-gray-800" placeholder="동작 방식"></textarea>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <label class="flex items-center text-sm font-bold text-green-700 mb-1"><i class="fas fa-check-circle mr-2"></i>5. 옵션</label>
+                    <textarea id="in-option" rows="6" class="w-full p-3 bg-green-50 border border-green-100 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none resize-none transition text-sm text-gray-800" placeholder="추가 설정"></textarea>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur border-t border-gray-200 p-4 md:p-5 flex justify-center z-20">
+        <button onclick="generateAndCopy()" class="w-full max-w-sm bg-gray-900 hover:bg-black text-white text-sm md:text-base font-bold py-3 md:py-3.5 px-6 md:px-8 rounded-full shadow-lg transform hover:-translate-y-1 transition flex items-center justify-center gap-2">
+          <i class="fas fa-magic"></i>
+          <span>프롬프트 생성 & 복사</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <main id="view-templates" class="hidden flex-1 overflow-y-auto custom-scroll bg-gray-50 p-4 md:p-6 lg:p-10">
+    <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-10">
+            <h2 class="text-xl md:text-2xl font-black text-gray-800 mb-2">📚 Basic Templates (Best 12)</h2>
+            <p class="text-gray-500 text-sm">학교 현장에서 가장 유용하게 쓰이는<br><b>필수 웹앱 예시 12선</b>입니다. 클릭하면 복사됩니다.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5 pb-20">
+            <div onclick="copyTemplate(0)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center"><i class="fas fa-calendar-check"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">학부모 상담 예약</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">상담 주간 활용. 선착순 예약, 중복 방지.</p><span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-bold">#행정 #예약</span></div>
+            <div onclick="copyTemplate(1)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center"><i class="fas fa-spell-check"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">단어 암기 퀴즈</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">단어/뜻 입력 시 4지선다 퀴즈 생성. 오답 노트.</p><span class="text-[10px] bg-yellow-50 text-yellow-600 px-2 py-1 rounded font-bold">#영어 #학습</span></div>
+            <div onclick="copyTemplate(2)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-trophy"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">스포츠 리그전 관리</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">승점/득실차/순위 자동 계산. 네이버 스포츠 스타일.</p><span class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded font-bold">#체육 #자동계산</span></div>
+            <div onclick="copyTemplate(3)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><i class="fas fa-bus"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">버스 좌석 예약</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">현장체험학습 시각적 좌석 배치도. 클릭 예약.</p><span class="text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded font-bold">#여행 #시각화</span></div>
+            <div onclick="copyTemplate(4)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center"><i class="fas fa-utensils"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">급식 메뉴 투표</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">이달의 메뉴 선정 투표. 실시간 득표 현황 그래프.</p><span class="text-[10px] bg-orange-50 text-orange-600 px-2 py-1 rounded font-bold">#급식 #투표</span></div>
+            <div onclick="copyTemplate(5)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fas fa-dice"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">만능 랜덤 추첨기</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">발표자, 청소 당번, 자리 배치 등. 룰렛 효과.</p><span class="text-[10px] bg-purple-50 text-purple-600 px-2 py-1 rounded font-bold">#학급 #게임</span></div>
+            <div onclick="copyTemplate(6)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center"><i class="fas fa-box-open"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">분실물 센터</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">사진 업로드, 게시판 조회. 수령 확인 버튼.</p><span class="text-[10px] bg-red-50 text-red-600 px-2 py-1 rounded font-bold">#생활 #게시판</span></div>
+            <div onclick="copyTemplate(7)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center"><i class="fas fa-book-reader"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">온라인 독서 기록</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">학생별 독서 감상문 누적. 책장 UI.</p><span class="text-[10px] bg-teal-50 text-teal-600 px-2 py-1 rounded font-bold">#국어 #독서</span></div>
+            <div onclick="copyTemplate(8)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center"><i class="fas fa-heartbeat"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">PAPS 등급 계산</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">교육부 기준 등급 자동 산출. 건강 조언.</p><span class="text-[10px] bg-pink-50 text-pink-600 px-2 py-1 rounded font-bold">#건강 #로직</span></div>
+            <div onclick="copyTemplate(9)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fas fa-stopwatch"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">멀티 타이머</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">모둠별 동시 측정. 랩타임 기록, 엑셀 저장.</p><span class="text-[10px] bg-gray-50 text-gray-600 px-2 py-1 rounded font-bold">#과학 #유틸</span></div>
+            <div onclick="copyTemplate(10)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-cyan-100 text-cyan-600 flex items-center justify-center"><i class="fas fa-users-cog"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">모둠 동료 평가</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">기여도/인성 점수 입력. 익명 저장.</p><span class="text-[10px] bg-cyan-50 text-cyan-600 px-2 py-1 rounded font-bold">#수업 #평가</span></div>
+            <div onclick="copyTemplate(11)" class="template-card bg-white p-4 md:p-5 rounded-2xl cursor-pointer group"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center"><i class="fas fa-school"></i></div><h3 class="font-bold text-gray-800 text-sm md:text-base">방과후 수강 신청</h3></div><p class="text-xs text-gray-500 mb-3 leading-relaxed">실시간 잔여석 확인. 선착순 클릭 전쟁.</p><span class="text-[10px] bg-rose-50 text-rose-600 px-2 py-1 rounded font-bold">#행정 #선착순</span></div>
+        </div>
+    </div>
+  </main>
+
+  <main id="view-guide" class="hidden flex-1 overflow-y-auto custom-scroll bg-gray-50 p-4 md:p-6 lg:p-10">
+    <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-6 md:p-8">
+      <h2 class="text-xl md:text-2xl font-black text-gray-800 mb-6 flex items-center">
+        <span class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mr-3 text-xl">📖</span>
+        Easy App Builder V2.6 200% 활용하기
+      </h2>
+      
+      <div class="space-y-8">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">1</div>
+          <div>
+            <h3 class="font-bold text-gray-900 text-base md:text-lg mb-1">무엇을 만들지 알려주세요 (주제)</h3>
+            <p class="text-gray-600 leading-relaxed text-sm">
+              왼쪽의 예시(Chip)들은 참고만 하시고, <span class="bg-blue-50 px-1 rounded font-bold text-blue-800">선생님만의 주제를 직접 작성해주세요.</span><br>
+              "학교 축제 투표", "자리 바꾸기" 등 핵심 키워드만 적어도 충분합니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">2</div>
+          <div>
+            <h3 class="font-bold text-gray-900 text-base md:text-lg mb-1">상세 내용이 생명입니다! (기능) ✨</h3>
+            <p class="text-gray-600 leading-relaxed text-sm">
+              이곳이 가장 중요합니다. 단순히 칩만 클릭하지 말고, <span class="bg-indigo-50 px-1 rounded font-bold text-indigo-800">구체적인 규칙을 텍스트로 적어주세요.</span><br>
+              예시: <i>"구글 시트 A열은 학번, B열은 이름으로 저장해줘", "퀴즈 문제는 랜덤으로 10개씩 출제해줘"</i> 등 자세할수록 AI가 정확한 코드를 짜줍니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center font-bold">3</div>
+          <div>
+            <h3 class="font-bold text-gray-900 text-base md:text-lg mb-1">디자인과 동작 고르기</h3>
+            <p class="text-gray-600 leading-relaxed text-sm">
+              원하는 앱 스타일(카카오톡, 네이버 등)과 움직임(애니메이션)을 선택하세요. 고민된다면 비워두셔도 AI가 '깔끔한 최신 유행 스타일'로 알아서 만들어줍니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center font-bold">4</div>
+          <div>
+            <h3 class="font-bold text-gray-900 text-base md:text-lg mb-1">복사해서 AI에게 붙여넣기</h3>
+            <p class="text-gray-600 leading-relaxed text-sm">
+              [프롬프트 생성 & 복사] 버튼을 누른 뒤, <b>ChatGPT, Claude, Gemini</b> 채팅창에 붙여넣기(Ctrl+V) 하세요.<br>
+              이 프롬프트에는 AI가 <span class="text-purple-600 font-bold">Code.gs(백엔드)</span>와 <span class="text-purple-600 font-bold">Index.html(프론트엔드)</span> 두 개의 파일로 나눠서 코드를 짜도록 하는 강력한 명령어가 숨겨져 있습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-10 p-5 bg-gray-50 rounded-xl border border-gray-200">
+          <h4 class="font-bold text-gray-800 mb-2 text-sm"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>개발자의 꿀팁 (Tip & Tricks)</h4>
+          <ul class="text-sm text-gray-600 space-y-2 list-disc list-inside">
+              <li><b>한 번에 완벽할 순 없어요:</b> AI가 짜준 코드를 실행해보고, 수정하고 싶은 부분이 있다면 "배경색을 파란색으로 바꿔줘" 처럼 채팅으로 계속 대화(티키타카)하며 완성해 나가세요.</li>
+              <li><b>구글 시트 연동:</b> '옵션' 탭에서 'DB 연결'을 선택하면 데이터를 시트에 저장하는 기능을 쉽게 구현할 수 있습니다.</li>
+              <li><b>Full-Stack 방식:</b> 이 빌더는 'Code.gs'와 'Index.html'을 따로 생성합니다. 구글 앱스 스크립트 에디터에서 파일 두 개를 각각 만들고 붙여넣으세요.</li>
+          </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 15px 0; color: #888; font-size: 12px; font-family: sans-serif; line-height: 1.6;" class="shrink-0">
+    <div>
+        Developed by <strong>김주현(광평중)</strong> &nbsp;|&nbsp; 
+        <a href="https://instagram.com/kimju.zip" target="_blank" style="text-decoration: none; color: #E1306C; font-weight: bold;">
+            💟 @kimju.zip
+        </a>
+    </div>
+    <div style="font-size: 10px; opacity: 0.8;">
+        &copy; 2025. All Rights Reserved.
+    </div>
+  </footer>
+
+  <div id="copyModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl transform scale-95 transition-transform duration-200 flex flex-col max-h-[85vh]">
+      <div class="p-4 md:p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-3xl">
+        <h3 class="font-bold text-base md:text-lg text-gray-800 flex items-center"><i class="fas fa-check-circle text-green-500 mr-2"></i> 복사 완료!</h3>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full hover:bg-gray-200 flex items-center justify-center text-gray-400 transition"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="p-4 md:p-6 overflow-y-auto custom-scroll bg-gray-900 text-gray-300 font-mono text-xs md:text-sm leading-relaxed whitespace-pre-wrap" id="modalContent"></div>
+      <div class="p-4 bg-white border-t border-gray-100 rounded-b-3xl text-center">
+          <p class="text-sm text-gray-500 mb-3">이제 Gemini, ChatGPT 창으로 가서 <b>붙여넣기(Ctrl+V)</b> 하세요.</p>
+          <button onclick="closeModal()" class="px-6 md:px-8 py-2.5 md:py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition shadow-lg shadow-blue-200">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="alertModal" class="fixed inset-0 bg-black/60 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm transform scale-95 transition-transform duration-200 overflow-hidden">
+      <div class="p-6 pb-0 flex justify-center"><div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-2 animate-bounce"><span class="text-3xl">😅</span></div></div>
+      <div class="px-6 py-2 text-center"><h3 class="text-lg font-bold text-gray-900 mb-2">잠깐만요!</h3><p class="text-sm text-gray-500 leading-relaxed" id="alertMessage">내용이 입력되지 않았습니다.</p></div>
+      <div class="p-6 pt-4"><button onclick="closeAlert()" class="w-full py-3 bg-gray-900 hover:bg-black text-white font-bold rounded-xl transition shadow-lg transform active:scale-95">확인</button></div>
+    </div>
+  </div>
+
+  <div id="resetModal" class="fixed inset-0 bg-black/60 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm transform scale-95 transition-transform duration-200 overflow-hidden">
+        <div class="p-6 pb-0 flex justify-center"><div class="w-16 h-16 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center mb-2"><i class="fas fa-redo-alt text-2xl"></i></div></div>
+        <div class="px-6 py-2 text-center">
+            <h3 class="text-lg font-bold text-gray-900 mb-2">모두 지우고 새로 쓸까요?</h3>
+            <p class="text-sm text-gray-500 leading-relaxed">입력하신 내용이 모두 사라집니다.<br>계속하시겠습니까?</p>
+        </div>
+        <div class="p-6 pt-4 flex gap-3">
+            <button onclick="closeResetModal()" class="flex-1 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition">취소</button>
+            <button onclick="confirmReset()" class="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition shadow-lg shadow-red-200">초기화</button>
+        </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+        const builderView = document.getElementById('view-builder');
+        const templatesView = document.getElementById('view-templates');
+        const guideView = document.getElementById('view-guide'); 
+        
+        const btnBuilder = document.getElementById('btn-builder');
+        const btnTemplates = document.getElementById('btn-templates');
+        const btnGuide = document.getElementById('btn-guide'); 
+
+        builderView.classList.add('hidden');
+        templatesView.classList.add('hidden');
+        guideView.classList.add('hidden');
+        
+        btnBuilder.className = 'tab-inactive h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2';
+        btnTemplates.className = 'tab-inactive h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2';
+        btnGuide.className = 'tab-inactive h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2';
+
+        if(tabName === 'builder') {
+            builderView.classList.remove('hidden');
+            btnBuilder.className = 'tab-active h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2';
+        } else if(tabName === 'templates') {
+            templatesView.classList.remove('hidden');
+            btnTemplates.className = 'tab-active h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2';
+        } else if(tabName === 'guide') {
+            guideView.classList.remove('hidden');
+            btnGuide.className = 'tab-active h-full flex items-center gap-2 text-xs lg:text-sm transition-colors px-2';
+        }
+    }
+
+    function setText(id, text) {
+        const input = document.getElementById(id);
+        input.value = text;
+        highlightInput(input);
+    }
+
+    function addText(id, text) {
+        const input = document.getElementById(id);
+        if(input.value && !input.value.endsWith('\n')) input.value += '\n';
+        input.value += text;
+        input.scrollTop = input.scrollHeight;
+        highlightInput(input);
+    }
+
+    function highlightInput(input) {
+        input.classList.add('ring-2', 'ring-blue-400', 'bg-blue-50');
+        setTimeout(() => input.classList.remove('ring-2', 'ring-blue-400', 'bg-blue-50'), 300);
+    }
+
+    function resetAll() {
+        const m = document.getElementById('resetModal');
+        m.classList.remove('hidden');
+        setTimeout(()=> { m.classList.remove('opacity-0'); m.firstElementChild.classList.remove('scale-95'); }, 10);
+    }
+
+    function confirmReset() {
+        ['in-subject', 'in-feature', 'in-style', 'in-behavior', 'in-option'].forEach(id => document.getElementById(id).value = '');
+        closeResetModal();
+    }
+
+    function closeResetModal() {
+        const m = document.getElementById('resetModal');
+        m.classList.add('opacity-0'); m.firstElementChild.classList.add('scale-95');
+        setTimeout(()=> m.classList.add('hidden'), 200);
+    }
+
+    function showModal(txt) {
+        const modal = document.getElementById('copyModal');
+        const content = document.getElementById('modalContent');
+        const cleanText = txt.trim();
+
+        const textArea = document.createElement("textarea");
+        textArea.value = cleanText;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try { document.execCommand('copy'); } catch (err) { console.error('복사 실패:', err); }
+        document.body.removeChild(textArea);
+
+        content.textContent = cleanText;
+        modal.classList.remove('hidden');
+        setTimeout(() => { modal.classList.remove('opacity-0'); modal.firstElementChild.classList.remove('scale-95'); }, 10);
+    }
+    
+    function showAlert(msg) {
+        document.getElementById('alertMessage').innerHTML = msg;
+        const m = document.getElementById('alertModal');
+        m.classList.remove('hidden');
+        setTimeout(()=> { m.classList.remove('opacity-0'); m.firstElementChild.classList.remove('scale-95'); }, 10);
+    }
+    function closeAlert() {
+        const m = document.getElementById('alertModal');
+        m.classList.add('opacity-0'); m.firstElementChild.classList.add('scale-95');
+        setTimeout(()=> m.classList.add('hidden'), 200);
+    }
+    function closeModal() {
+        const m = document.getElementById('copyModal');
+        m.classList.add('opacity-0'); m.firstElementChild.classList.add('scale-95');
+        setTimeout(()=> m.classList.add('hidden'), 200);
+    }
+
+    const PROMPT_FOOTER = `
+\n\n[SYSTEM DIRECTIVE: GOOGLE APPS SCRIPT FULL-STACK]
+1. **Architecture:** You MUST generate **Two Distinct Files**:
+   - \`Code.gs\`: Server-side Google Apps Script.
+   - \`Index.html\`: Client-side HTML/CSS/JS.
+2. **Constraint:** Do NOT merge them into a single HTML file. I need to copy-paste them into the GAS editor separately.
+3. **Interface:** Use Canvas/Artifacts to display these two files clearly.`;
+
+    function generateAndCopy() {
+        const v = {
+            subject: document.getElementById('in-subject').value,
+            feature: document.getElementById('in-feature').value,
+            style: document.getElementById('in-style').value,
+            behavior: document.getElementById('in-behavior').value,
+            option: document.getElementById('in-option').value
+        };
+        if (!v.subject) { showAlert('😅 주제(Subject)는 꼭 입력해주세요!'); return; }
+        
+        const prompt = `
+[Web App Development Prompt]
+Role: You are a Senior Full-Stack Developer proficient in Google Apps Script (GAS) and Modern Web Design.
+
+1. PROJECT TITLE (Subject)
+${v.subject}
+
+2. KEY FEATURES & DETAILED REQUIREMENTS
+${v.feature || '- Basic Input/Output'}
+
+3. UI/UX DESIGN
+${v.style || '- Clean and Modern Style (Tailwind CSS)'}
+
+4. USER INTERACTION
+${v.behavior || '- Standard Interaction'}
+
+5. REQUIREMENTS & OPTIONS
+${v.option || '- Provide both Code.gs and Index.html codes.\n- Korean Comments included'}
+
+---
+ACTION: Based on the requirements above, please write the complete "Code.gs" and "Index.html" codes to create this web application immediately.
+${PROMPT_FOOTER}
+`;
+        showModal(prompt.trim());
+    }
+
+    const templates = [
+        `[상담 예약 앱] 주제: 학부모 상담 예약 시스템\n기능: 교사 슬롯 설정, 선착순 예약, 중복 방지\n디자인: 토스 스타일, 깔끔한 카드 UI\n동작: 예약 버튼 클릭 시 실시간 처리 및 완료 팝업\n옵션: 활성 시트 연동, 한글 주석`,
+        `[단어 퀴즈 앱] 주제: 영어 단어 암기 퀴즈\n기능: 시트에서 단어 로드, 4지선다 생성, 오답 노트 저장\n디자인: 듀오링고 스타일, 둥근 버튼, 귀여운 색감\n동작: 정답 시 효과음 및 칭찬 애니메이션\n옵션: 반응형 웹, 점수 기록`,
+        `[스포츠 리그 앱] 주제: 학교 스포츠클럽 리그전 관리\n기능: 승점/득실차 자동 계산, 순위표 정렬, 전적 조회\n디자인: 네이버 스포츠 스타일, 흰색/그린 테마\n동작: 점수 입력 즉시 순위표 갱신 (비동기)\n옵션: 모바일 최적화`,
+        `[버스 좌석 앱] 주제: 현장체험학습 버스 좌석 예약\n기능: 45인승 좌석 배치도 시각화, 클릭하여 예약/취소\n디자인: 영화관 예매 앱 스타일, 좌석 아이콘 활용\n동작: 이미 예약된 좌석은 회색 처리 및 클릭 불가\n옵션: 시트 자동 저장`,
+        `[급식 투표 앱] 주제: 이달의 급식 메뉴 투표\n기능: 메뉴 사진 크게 보기, 투표 수 실시간 차트 표시\n디자인: 인스타그램 투표 스티커 느낌, 파스텔톤\n동작: 투표 시 차트 애니메이션 실행\n옵션: 쿠키 활용 중복 투표 방지`,
+        `[만능 랜덤 추첨기] 주제: 학급 만능 랜덤 추첨기\n기능: 번호/이름 목록 불러오기, 제외 대상 설정, 결과 발표\n디자인: 방송국 예능 자막 스타일, 화려한 색감\n동작: 두구두구 룰렛 회전 애니메이션 효과\n옵션: 효과음, 폭죽 효과`,
+        `[분실물 센터 앱] 주제: 학교 분실물 게시판\n기능: 사진 업로드(Base64), 습득 장소 입력, 수령 확인 버튼\n디자인: 당근마켓 스타일, 썸네일 리스트 뷰\n동작: '수령완료' 클릭 시 리스트에서 숨김 처리\n옵션: 검색 및 필터 기능`,
+        `[독서 기록 앱] 주제: 온라인 독서 감상문 기록장\n기능: 책 제목/저자/감상평 입력, 내 기록 모아보기\n디자인: 교보문고/알라딘 서재 스타일, 차분한 우드톤\n동작: 저장 시 책장에 책이 꽂히는 느낌의 UI\n옵션: 학번으로 본인 글만 조회`,
+        `[PAPS 앱] 주제: PAPS 등급 자동 계산기\n기능: 종목별 기록 입력 시 등급(1~5) 자동 매칭, 종합 점수\n디자인: 건강관리 앱(삼성헬스) 스타일, 직관적 게이지\n동작: 등급에 따라 뱃지 색상 변경 (1등급:금색)\n옵션: 교육부 최신 기준표 적용`,
+        `[멀티 타이머 앱] 주제: 과학 실험용 멀티 스톱워치\n기능: 6개 모둠 동시 측정, 랩타임 기록, 결과 엑셀 저장\n디자인: 아이폰 타이머 스타일, 검은 배경, 형광 숫자\n동작: 밀리초 단위까지 정밀 표시\n옵션: 스페이스바 단축키 지원`,
+        `[동료 평가 앱] 주제: 모둠 활동 동료 평가\n기능: 평가 대상(조원) 선택, 항목별 점수(기여도/인성) 입력, 익명 저장\n디자인: 구글 설문지 스타일, 깔끔한 슬라이더 UI\n동작: 제출 완료 시 감사 메시지 표시\n옵션: 자기 평가 제외, 평균 점수 산출`,
+        `[수강 신청 앱] 주제: 방과후 학교 수강 신청 시스템\n기능: 강좌 목록 및 정원 표시, 실시간 잔여석 카운트, 신청/취소\n디자인: 쇼핑몰 품절 임박 UI, 마감 시 붉은색 표시\n동작: 신청 버튼 클릭 시 즉시 잔여석 차감 반영\n옵션: 1인 1강좌 제한, 선착순 로직`
+    ];
+
+    function copyTemplate(index) {
+        const header = `[MANDATORY ACTION: CREATE TWO FILES]\n**System:** You are an Expert GAS Developer.\n**Task:** Create a fully functional Web App.\n**Output Format:** Provide both 'Code.gs' (Backend) and 'Index.html' (Frontend) codes.\n\n`;
+        showModal(header + templates[index] + PROMPT_FOOTER);
+    }
+  </script>
+</body>
+</html>
